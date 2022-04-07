@@ -19,7 +19,7 @@ public class MailClient {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.username}") //固定值的注入
     private String from;
 
     public void sendMail(String to, String subject, String content){
