@@ -67,10 +67,9 @@
 					<div class="form-group row">
 						<label for="username" class="col-sm-2 col-form-label text-right">账号:</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="username"
-								   th:class="|form-control ${usernameMsg!=null?'is-invalid':''}|"
+							<input type="text" th:class="|form-control ${usernameMsg!=null?'is-invalid':''}|" id="username"
 								   th:value="${user!=null?user.username:''}"
-								   name="username" placeholder="请输入您的账号!" required>
+								   name="username" placeholder="请输入您的账号!" required> <!-- name = ”“ 要和实体类中的属性对应上 -->
 							<div class="invalid-feedback" th:text="${usernameMsg}">
 								该账号已存在!
 							</div>
@@ -80,8 +79,7 @@
 						<label for="password" class="col-sm-2 col-form-label text-right">密码:</label>
 						<div class="col-sm-10">
 							<!--name = “”中的字符串要和实体类中的属性名对应上  value=“”中填写的是默认值-->
-							<input type="password" class="form-control" id="password"
-								   th:class="|form-control ${passwordMsg!=null?'is-invalid':''}|"
+							<input type="password" th:class="|form-control ${passwordMsg!=null?'is-invalid':''}|" id="password"
 								   th:value="${user!=null?user.password:''}"
 								   name="password" placeholder="请输入您的密码!" required>
 							<div class="invalid-feedback" th:text="${passwordMsg}">
@@ -104,8 +102,7 @@
 					<div class="form-group row">
 						<label for="email" class="col-sm-2 col-form-label text-right">邮箱:</label>
 						<div class="col-sm-10">
-							<input type="email" class="form-control" id="email"
-								   th:class="|form-control ${emailMsg!=null?'is-invalid':''}|"
+							<input type="email" th:class="|form-control ${emailMsg!=null?'is-invalid':''}|" id="email"
 								   th:value="${user!=null?user.email:''}"
 								   name="email" placeholder="请输入您的邮箱!" required>
 							<div class="invalid-feedback" th:text="${emailMsg}">

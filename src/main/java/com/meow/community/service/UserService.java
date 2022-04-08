@@ -1,7 +1,9 @@
 package com.meow.community.service;
 
 
+import com.meow.community.dao.LoginTicketMapper;
 import com.meow.community.dao.UserMapper;
+import com.meow.community.entity.LoginTicket;
 import com.meow.community.entity.User;
 import com.meow.community.util.CommunityConstant;
 import com.meow.community.util.CommunityUtil;
@@ -25,6 +27,9 @@ public class UserService implements CommunityConstant {
 
     @Autowired
     private MailClient mailClient;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Autowired
     private TemplateEngine templateEngine;
@@ -104,5 +109,53 @@ public class UserService implements CommunityConstant {
         }else{
             return ACTIVATION_FAILURE;
         }
+    }
+
+    public Map<String, Object> login(String username, String password, int expiredSeconds){
+        Map<String, Object> map = new HashMap<>();
+
+        //空值处理
+        if(StringUtils.isBlank(username)){
+            map.put("usernameMsg","用户名不能为空！");
+            return map;
+        }
+        if(StringUtils.isBlank(password)){
+            map.put("passwordMsg","密码不能为空！");
+            return map;
+        }
+
+        User user = userMapper.selectByName(username);
+        //判断用户名是否正确
+        if(user == null){
+            map.put("usernameMsg","用户名不正确！");
+            return map;
+        }
+
+        //判断密码是否正确
+        password = CommunityUtil.md5(password + user.getSalt());
+        if(!password.equals(user.getPassword())){
+            map.put("passwordMsg","密码不正确！");
+            return map;
+        }
+
+        //判断用户是否为激活
+        if(user.getStatus() == 0){
+            map.put("usernameMsg","该用户未激活！");
+            return map;
+        }
+
+        //用户登录成功时，生成登录凭证
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000L));
+        loginTicket.setTicket(CommunityUtil.generateUUID());
+        loginTicketMapper.insertLoginTicket(loginTicket);
+        map.put("ticket", loginTicket.getTicket());
+        return map;
+    }
+
+    public void logout(String ticket){
+        loginTicketMapper.updateStatus(ticket,1);
     }
 }

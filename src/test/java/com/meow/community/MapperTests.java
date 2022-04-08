@@ -1,8 +1,10 @@
 package com.meow.community;
 
 import com.meow.community.dao.DiscussPostMapper;
+import com.meow.community.dao.LoginTicketMapper;
 import com.meow.community.dao.UserMapper;
 import com.meow.community.entity.DiscussPost;
+import com.meow.community.entity.LoginTicket;
 import com.meow.community.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +69,26 @@ public class MapperTests {
     public void testSelectDiscussPostRows(){
         int rows = discussPostMapper.selectDiscussPostRows(0);
         System.out.println(rows);
+    }
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+    @Test
+    public void testInsertLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(102);
+        loginTicket.setTicket("abcd");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+        int rows = loginTicketMapper.insertLoginTicket(loginTicket);
+        System.out.println(rows);
+    }
+    @Test
+    public void testSelectAndUpdateLoginTicket(){
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abcd");
+        System.out.println(loginTicket);
+        loginTicketMapper.updateStatus("abcd",1);
+        loginTicket = loginTicketMapper.selectByTicket("abcd");
+        System.out.println(loginTicket);
     }
 }

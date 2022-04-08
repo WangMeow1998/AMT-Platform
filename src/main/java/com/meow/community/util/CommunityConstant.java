@@ -15,4 +15,14 @@ public interface CommunityConstant {
      * 激活失败
      */
     int ACTIVATION_FAILURE = 2;
+
+    /**
+     * 默认用户状态的持续时间
+     */
+    int DEFAULT_EXPIRED_TIME = 60 * 60 * 12; //单位：秒，默认为12个小时
+
+    /**
+     * 记住用户状态的持续时间
+     */
+    int REMEMBER_EXPIRED_TIME = 60 * 60 * 24 * 90; ////单位：秒，勾选记住时，状态为3个月
 }
