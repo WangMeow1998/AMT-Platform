@@ -1,3 +1,5 @@
+var CONTEXT_PATH = "/community";  //声明一个全局常量，表示项目名
+
 window.alert = function(message) {
 	if(!$(".alert-box").length) {
 		$("body").append(

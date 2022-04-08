@@ -2,16 +2,14 @@ package com.meow.community.controller;
 
 
 import com.meow.community.service.AlphaService;
+import com.meow.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.flyway.FlywayDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -148,5 +146,44 @@ public class AlphaController {
         list.add(map);
         return list;
     }
-
+    // Cookie
+    @RequestMapping(path = "/cookie/set", method = RequestMethod.GET)
+    @ResponseBody
+    //设置Cookie
+    public String setCookie(HttpServletResponse response){
+        //创建Cookie
+        Cookie cookie = new Cookie("code", CommunityUtil.generateUUID());
+        //设置Cookie的生效范围
+        cookie.setPath("/community/alpha");
+        //设置Cookie的生存时间
+        cookie.setMaxAge(60 * 10); //单位是s，60 * 10 ===》 生存时间为10分钟
+        //发送Cookie
+        response.addCookie(cookie);
+        return "set cookie";
+    }
+    @RequestMapping(path = "/cookie/get", method = RequestMethod.GET)
+    @ResponseBody
+    //携带Cookie发送请求
+    public String getCookie(@CookieValue("code") String cookieCode){
+        System.out.println(cookieCode);
+        return "get cookie";
+    }
+    //Session
+    @RequestMapping(path = "/session/set", method = RequestMethod.GET)
+    @ResponseBody
+    //设置Session
+    public String setSession(HttpSession session){ //Spring会自动注入Session对象
+        //在Session中添加数据
+        session.setAttribute("id",233);
+        session.setAttribute("name","meowmm");
+        return "set session";
+    }
+    @RequestMapping(path = "/session/get", method = RequestMethod.GET)
+    @ResponseBody
+    //携带Cookie（sessionId）发送请求
+    public String getSession(HttpSession session){
+        System.out.println(session.getAttribute("id")); //利用Key获取Session中的数据
+        System.out.println(session.getAttribute("name")); //利用Key获取Session中的数据
+        return "get session";
+    }
 }
