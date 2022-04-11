@@ -1,5 +1,6 @@
 package com.meow.community.controller;
 
+import com.meow.community.annotation.LoginRequired;
 import com.meow.community.entity.User;
 import com.meow.community.service.UserService;
 import com.meow.community.util.CommunityUtil;
@@ -41,11 +42,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getUserSettingPage(Model model){
         return "/site/setting";
     }
 
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model){
         if(headerImage == null){
@@ -98,6 +101,8 @@ public class UserController {
             logger.error("读取头像失败: " + e.getMessage());
         }
     }
+
+    @LoginRequired
     @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
     public String changeUserPassword(String oldPassword, String newPassword, Model model){
         //获取用户
