@@ -76,7 +76,6 @@ public class SensitiveFilter {
         int position = 0;
         //结果
         StringBuilder res = new StringBuilder();
-
         int textLen = text.length();
         while(position < textLen){
             char c = text.charAt(position);
