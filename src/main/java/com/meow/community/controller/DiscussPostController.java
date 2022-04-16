@@ -92,9 +92,9 @@ public class DiscussPostController implements CommunityConstant {
                     for(Comment reply : replyList){
                         //回复的ValueObject
                         Map<String, Object> replyMap = new HashMap<>();
-                        //回复者
+                        //回复的作者
                         replyMap.put("user", userService.findUserById(reply.getUserId()));
-                        //回复目标
+                        //回复的目标
                         User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
                         replyMap.put("target", target);
                         //回复

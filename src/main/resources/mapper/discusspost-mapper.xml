@@ -21,6 +21,7 @@
         order by type desc, create_time desc
         limit #{offset}, #{limit}
     </select>
+
     <select id="selectDiscussPostRows" resultType="int">
         select count(id)
         from discuss_post
@@ -29,13 +30,20 @@
             and user_id = #{userId}
         </if>
     </select>
+
     <insert id="insertDiscussPost" parameterType="DiscussPost">
         INSERT INTO discuss_post (<include refid="insertFields"/>)
         VALUES (#{userId}, #{title}, #{content}, #{type}, #{status}, #{createTime}, #{commentCount}, #{score})
     </insert>
+
     <select id="selectDiscussPostById" resultType="DiscussPost">
         SELECT <include refid="selectFields"/>
         FROM discuss_post
         WHERE id = #{id}
     </select>
+
+    <update id="updateDiscussPostCommentCount">
+        UPDATE discuss_post SET comment_count = #{commentCount}
+        WHERE id = #{id}
+    </update>
 </mapper>

@@ -8,6 +8,10 @@
         id, user_id, entity_type, entity_id, target_id, content, status, create_time
     </sql>
 
+    <sql id="insertFields">
+        user_id, entity_type, entity_id, target_id, content, status, create_time
+    </sql>
+
     <select id="selectComments" resultType="Comment">
         SELECT <include refid="selectFields"/>
         FROM comment
@@ -23,4 +27,9 @@
         WHERE entity_type = #{entityType}
         AND entity_id = #{entityId}
     </select>
+
+    <insert id="insertComment" parameterType="Comment">
+        INSERT INTO comment (<include refid="insertFields"/>)
+        VALUES (#{userId}, #{entityType}, #{entityId}, #{targetId}, #{content}, #{status}, #{createTime})
+    </insert>
 </mapper>
