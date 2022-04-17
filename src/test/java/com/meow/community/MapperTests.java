@@ -2,9 +2,11 @@ package com.meow.community;
 
 import com.meow.community.dao.DiscussPostMapper;
 import com.meow.community.dao.LoginTicketMapper;
+import com.meow.community.dao.MessageMapper;
 import com.meow.community.dao.UserMapper;
 import com.meow.community.entity.DiscussPost;
 import com.meow.community.entity.LoginTicket;
+import com.meow.community.entity.Message;
 import com.meow.community.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,5 +92,29 @@ public class MapperTests {
         loginTicketMapper.updateStatus("abcd",1);
         loginTicket = loginTicketMapper.selectByTicket("abcd");
         System.out.println(loginTicket);
+    }
+
+    @Autowired
+    private MessageMapper messageMapper;
+
+    @Test
+    public void testMessageMapper(){
+        List<Message> messages = messageMapper.selectConversations(111,0,20);
+        for (Message message : messages){
+            System.out.println(message);
+        }
+        int count = messageMapper.selectConversationCount(111);
+        System.out.println(count);
+        System.out.println("-----------------------分界线-----------------------");
+        List<Message> letters = messageMapper.selectLetters("111_112",0,10);
+        for (Message letter : letters){
+            System.out.println(letter);
+        }
+        System.out.println(letters.size());
+        int letterCount = messageMapper.selectLetterCount("111_112");
+        System.out.println(letterCount);
+        System.out.println("-----------------------分界线-----------------------");
+        int letterUnreadCount = messageMapper.selectLetterUnreadCount(131,"111_131");
+        System.out.println(letterUnreadCount);
     }
 }
