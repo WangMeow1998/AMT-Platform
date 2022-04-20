@@ -33,7 +33,6 @@ public class MessageController {
 
     @RequestMapping(path = "/conversation/list", method = RequestMethod.GET)
     public String findConversations(Model model, Page page){
-        Integer.parseInt("abc");
         //获取用户
         User user = hostHolder.getUser();
         //分页
