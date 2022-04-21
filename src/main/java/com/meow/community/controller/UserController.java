@@ -2,6 +2,7 @@ package com.meow.community.controller;
 
 import com.meow.community.annotation.LoginRequired;
 import com.meow.community.entity.User;
+import com.meow.community.service.LikeService;
 import com.meow.community.service.UserService;
 import com.meow.community.util.CommunityUtil;
 import com.meow.community.util.HostHolder;
@@ -41,6 +42,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LikeService likeService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -115,5 +119,19 @@ public class UserController {
             model.addAttribute("newPasswordMsg",map.get("newPasswordMsg"));
             return "/site/setting";
         }
+    }
+
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model){
+        User user = userService.findUserById(userId);
+        if(user == null){
+            throw new RuntimeException("该用户不存在");
+        }
+        //用户
+        model.addAttribute("user",user);
+        //获得点赞的数量
+        int userLikeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("userLikeCount", userLikeCount);
+        return "/site/profile";
     }
 }
