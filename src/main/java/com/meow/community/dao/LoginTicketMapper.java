@@ -4,6 +4,7 @@ import com.meow.community.entity.LoginTicket;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
+@Deprecated //使用Redis来存储Ticket后，此Mapper不再推荐使用
 public interface LoginTicketMapper {
 
     @Insert({"INSERT INTO login_ticket(user_id, ticket, status, expired) ",
