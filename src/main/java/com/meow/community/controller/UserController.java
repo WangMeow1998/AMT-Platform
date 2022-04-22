@@ -2,8 +2,10 @@ package com.meow.community.controller;
 
 import com.meow.community.annotation.LoginRequired;
 import com.meow.community.entity.User;
+import com.meow.community.service.FollowService;
 import com.meow.community.service.LikeService;
 import com.meow.community.service.UserService;
+import com.meow.community.util.CommunityConstant;
 import com.meow.community.util.CommunityUtil;
 import com.meow.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +27,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(path = "/user")
-public class UserController {
+public class UserController implements CommunityConstant {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Value("${community.path.domain}")
@@ -45,6 +47,9 @@ public class UserController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -132,6 +137,19 @@ public class UserController {
         //获得点赞的数量
         int userLikeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("userLikeCount", userLikeCount);
+
+        //用户关注的数量
+        long followingCount = followService.findFollowingCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followingCount", followingCount);
+        //用户粉丝的数量
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount",followerCount);
+        //用户关注的状态
+        boolean hasFollowed = false;
+        if(hostHolder.getUser() != null){
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
         return "/site/profile";
     }
 }
