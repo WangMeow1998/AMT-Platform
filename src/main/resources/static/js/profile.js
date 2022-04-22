@@ -5,7 +5,7 @@ $(function(){
 function follow() {
 	var btn = this;
 	if($(btn).hasClass("btn-info")) {
-		var entityId = $("#entityId").val();
+		var entityId = $(btn).prev().val();
 		// 关注TA
 		$.post(
 			CONTEXT_PATH + "/follow",
