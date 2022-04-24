@@ -1,8 +1,10 @@
 package com.meow.community.controller;
 
 
+import com.meow.community.entity.Event;
 import com.meow.community.entity.Page;
 import com.meow.community.entity.User;
+import com.meow.community.event.EventProducer;
 import com.meow.community.service.FollowService;
 import com.meow.community.service.UserService;
 import com.meow.community.util.CommunityConstant;
@@ -30,6 +32,9 @@ public class FollowController implements CommunityConstant {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     @ResponseBody
     public String follow(int entityType, int entityId){
@@ -38,6 +43,17 @@ public class FollowController implements CommunityConstant {
             return CommunityUtil.getJSONString(1, "请登录后再关注!");
         }
         followService.follow(user.getId(), entityType, entityId);
+
+
+        //触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserId(user.getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
+
         return CommunityUtil.getJSONString(0,"关注成功!");
     }
 

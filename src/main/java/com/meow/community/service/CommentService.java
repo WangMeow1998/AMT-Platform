@@ -34,6 +34,10 @@ public class CommentService implements CommunityConstant {
         return commentMapper.selectCommentRows(entityType, entityId);
     }
 
+    public Comment findCommentById(int id){
+        return commentMapper.selectCommentById(id);
+    }
+
     //先更新帖子，在增加评论数量（这里涉及到了事务）
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public int addComment(Comment comment){
