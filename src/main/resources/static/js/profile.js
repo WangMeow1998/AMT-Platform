@@ -22,7 +22,7 @@ function follow() {
 		// $(btn).text("已关注").removeClass("btn-info").addClass("btn-secondary");
 	} else {
 		// 取消关注
-		var entityId = $("#entityId").val();
+		var entityId = $(btn).prev().val();
 		// 关注TA
 		$.post(
 			CONTEXT_PATH + "/unfollow",
