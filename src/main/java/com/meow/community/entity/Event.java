@@ -42,7 +42,7 @@ public class Event {
         this.entityId = entityId;
         return this;
     }
-
+    
     public int getEntityType() {
         return entityType;
     }
