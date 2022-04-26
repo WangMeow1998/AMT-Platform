@@ -52,7 +52,7 @@ public class CommentService implements CommunityConstant {
         int rows = commentMapper.insertComment(comment);
 
         //更新帖子的评论数量
-        if(comment.getEntityType() == ENTITY_TYPE_POST_COMMENT){
+        if(comment.getEntityType() == ENTITY_TYPE_POST){
             int commentCount = commentMapper.selectCommentRows(comment.getEntityType(), comment.getEntityId());
             discussPostMapper.updateDiscussPostCommentCount(comment.getEntityId(), commentCount);
         }

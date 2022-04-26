@@ -40,21 +40,33 @@ public class CommentController implements CommunityConstant {
         comment.setCreateTime(new Date());
         commentService.addComment(comment);
 
-        //触发评论事件
+        //触发评论通知事件
         Event event = new Event()
                 .setTopic(TOPIC_COMMENT)
                 .setUserId(hostHolder.getUser().getId())
                 .setEntityType(comment.getEntityType())
                 .setEntityId(comment.getEntityId())
                 .setData("postId", discussPostId);
-        if(comment.getEntityType() == ENTITY_TYPE_POST_COMMENT){
+        if(comment.getEntityType() == ENTITY_TYPE_POST){
             DiscussPost target = discussPostService.findDiscussPostById(comment.getEntityId());
             event.setEntityUserId(target.getUserId());
-        } else if(comment.getEntityType() == ENTITY_TYPE_COMMENT_REPLY){
+        } else if(comment.getEntityType() == ENTITY_TYPE_COMMENT){
             Comment target = commentService.findCommentById(comment.getEntityId());
             event.setEntityUserId(target.getUserId());
         }
         eventProducer.fireEvent(event);
+
+
+        //当有了新的评论的时候，评论的数量会发生改变，而disscuss_post表中有comment_count属性，所以这里修改了帖子
+        //帖子更新了，要把更新的帖子再加到ElasticSearch服务器中
+        if(comment.getEntityType() == ENTITY_TYPE_POST){
+            //触发更新帖子事件，将帖子保存到Elasticsearch服务器中
+            Event updateEvent = new Event()
+                    .setTopic(TOPIC_PUBLISH)
+                    .setUserId(comment.getUserId())
+                    .setEntityId(discussPostId);
+            eventProducer.fireEvent(updateEvent);
+        }
 
         return "redirect:/discussPost/detail/" + discussPostId;
     }

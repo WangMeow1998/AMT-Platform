@@ -39,7 +39,7 @@
 							</li>
 							<li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${loginUser!=null}">
 								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;"/>
+									<img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;height:30px;"/>
 								</a>
 								<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 									<a class="dropdown-item text-center" th:href="@{|/user/profile/${loginUser.id}|}">个人主页</a>
@@ -51,8 +51,8 @@
 							</li>
 						</ul>
 						<!-- 搜索 -->
-						<form class="form-inline my-2 my-lg-0" action="site/search.html">
-							<input class="form-control mr-sm-2" type="search" aria-label="Search" />
+						<form class="form-inline my-2 my-lg-0" method="get" th:action="@{/search}">
+							<input class="form-control mr-sm-2" type="search" aria-label="Search" name="keyword" th:value="${keyword}"/>
 							<button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
 						</form>
 					</div>

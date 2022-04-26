@@ -49,7 +49,7 @@ public class HomeController implements CommunityConstant {
             for(DiscussPost discussPost : list){
                 Map<String, Object> map = new HashMap<>();
                 map.put("post", discussPost);
-                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST_COMMENT, discussPost.getId());
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPost.getId());
                 map.put("likeCount", likeCount);
                 User user = userService.findUserById(discussPost.getUserId());
                 map.put("user", user);

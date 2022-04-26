@@ -27,14 +27,15 @@ public interface CommunityConstant {
     int REMEMBER_EXPIRED_TIME = 60 * 60 * 24 * 90; ////单位：秒，勾选记住时，状态为3个月
 
     /**
-     *实体类型：帖子的评论
+     *实体类型：帖子
      */
-    int ENTITY_TYPE_POST_COMMENT = 1;
+
+    int ENTITY_TYPE_POST = 1;
 
     /**
-     * 实体类型：评论的评论，即回复
+     * 实体类型：评论
      */
-    int ENTITY_TYPE_COMMENT_REPLY = 2;
+    int ENTITY_TYPE_COMMENT = 2;
 
     /**
      * 实体类型：用户
@@ -57,6 +58,11 @@ public interface CommunityConstant {
      * 主题：关注
      */
     String TOPIC_FOLLOW = "follow";
+
+    /**
+     * 主题：发帖
+     */
+    String TOPIC_PUBLISH = "publish";
 
     /**
      * 系统管理员ID

@@ -45,7 +45,6 @@ public class ElasticsearchTests {
     @Autowired
     @Qualifier("client")
     private RestHighLevelClient restHighLevelClient;
-    private HighlightBuilder highlightBuilder;
 
     @Test
     public void testInsert(){
