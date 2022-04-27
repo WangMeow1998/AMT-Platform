@@ -174,12 +174,46 @@ public class DiscussPostController implements CommunityConstant {
         return CommunityUtil.getJSONString(0);
     }
 
+    //帖子取消置顶
+    @RequestMapping(path = "/notTop", method = RequestMethod.POST)
+    @ResponseBody
+    public String setNotTop(int id){
+        //更新帖子的类型 '0-普通; 1-置顶'
+        discussPostService.updateDiscussPostType(id, 0);
+
+        //触发发帖事件，将帖子保存到Elasticsearch服务器中
+        Event publishEvent = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityId(id);
+        eventProducer.fireEvent(publishEvent);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
     //帖子加精
     @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
     @ResponseBody
     public String setWonderful(int id){
         //更新帖子的状态 '0-正常; 1-精华; 2-拉黑;'
         discussPostService.updateDiscussPostStatus(id, 1);
+
+        //触发发帖事件，将帖子保存到Elasticsearch服务器中
+        Event publishEvent = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityId(id);
+        eventProducer.fireEvent(publishEvent);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //帖子取消加精
+    @RequestMapping(path = "/notWonderful", method = RequestMethod.POST)
+    @ResponseBody
+    public String setNotWonderful(int id){
+        //更新帖子的状态 '0-正常; 1-精华; 2-拉黑;'
+        discussPostService.updateDiscussPostStatus(id, 0);
 
         //触发发帖事件，将帖子保存到Elasticsearch服务器中
         Event publishEvent = new Event()

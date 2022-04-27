@@ -56,4 +56,5 @@
         UPDATE discuss_post SET status = #{status}
         WHERE id = #{id}
     </update>
+
 </mapper>

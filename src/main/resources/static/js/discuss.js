@@ -42,19 +42,39 @@ function setTop(){
         xhr.setRequestHeader(header, token);
     });
 
-    $.post(
-        CONTEXT_PATH + "/discussPost/top",
-        {"id":$("#postId").val()},
-        function (data){
-            data = $.parseJSON(data);
-            if(data.code == 0){
-                $("#topBtn").attr("disabled", "disabled");
-            } else{
-                alert(data.msg);
+    var btn = this;
+    if($(btn).hasClass("btn-secondary")){
+        $.post(
+            CONTEXT_PATH + "/discussPost/top",
+            {"id":$("#postId").val()},
+            function (data){
+                data = $.parseJSON(data);
+                if(data.code == 0){
+                    $("#topBtn").removeClass("btn-secondary").addClass("btn-danger");
+                } else{
+                    alert(data.msg);
+                }
             }
-        }
-    );
+        );
+    } else {
+        $.post(
+            CONTEXT_PATH + "/discussPost/notTop",
+            {"id":$("#postId").val()},
+            function (data){
+                data = $.parseJSON(data);
+                if(data.code == 0){
+                    $("#topBtn").removeClass("btn-danger").addClass("btn-secondary");
+                } else{
+                    alert(data.msg);
+                }
+            }
+        );
+    }
+
 }
+
+
+
 //加精
 function setWonderful(){
 
@@ -66,19 +86,35 @@ function setWonderful(){
         xhr.setRequestHeader(header, token);
     });
 
-
-    $.post(
-        CONTEXT_PATH + "/discussPost/wonderful",
-        {"id":$("#postId").val()},
-        function (data){
-            data = $.parseJSON(data);
-            if(data.code == 0){
-                $("#wonderfulBtn").attr("disabled", "disabled");
-            } else{
-                alert(data.msg);
+    var btn = this;
+    if($(btn).hasClass("btn-secondary")){
+        $.post(
+            CONTEXT_PATH + "/discussPost/wonderful",
+            {"id":$("#postId").val()},
+            function (data){
+                data = $.parseJSON(data);
+                if(data.code == 0){
+                    $("#wonderfulBtn").removeClass("btn-secondary").addClass("btn-danger");
+                } else{
+                    alert(data.msg);
+                }
             }
-        }
-    );
+        );
+    } else{
+        $.post(
+            CONTEXT_PATH + "/discussPost/notWonderful",
+            {"id":$("#postId").val()},
+            function (data){
+                data = $.parseJSON(data);
+                if(data.code == 0){
+                    $("#wonderfulBtn").removeClass("btn-danger").addClass("btn-secondary");
+                } else{
+                    alert(data.msg);
+                }
+            }
+        );
+    }
+
 }
 
 //删除

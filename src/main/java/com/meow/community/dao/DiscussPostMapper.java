@@ -32,4 +32,6 @@ public interface DiscussPostMapper {
 
     //更新帖子的状态 '0-正常; 1-精华; 2-拉黑;'
     int updateDiscussPostStatus(int id, int status);
+
+
 }
