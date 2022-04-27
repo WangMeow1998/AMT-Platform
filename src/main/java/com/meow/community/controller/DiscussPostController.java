@@ -155,4 +155,56 @@ public class DiscussPostController implements CommunityConstant {
         model.addAttribute("comments",commentValObjList);
         return "/site/discuss-detail";
     }
+
+
+    //帖子置顶
+    @RequestMapping(path = "/top", method = RequestMethod.POST)
+    @ResponseBody
+    public String setTop(int id){
+        //更新帖子的类型 '0-普通; 1-置顶'
+        discussPostService.updateDiscussPostType(id, 1);
+
+        //触发发帖事件，将帖子保存到Elasticsearch服务器中
+        Event publishEvent = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityId(id);
+        eventProducer.fireEvent(publishEvent);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //帖子加精
+    @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
+    @ResponseBody
+    public String setWonderful(int id){
+        //更新帖子的状态 '0-正常; 1-精华; 2-拉黑;'
+        discussPostService.updateDiscussPostStatus(id, 1);
+
+        //触发发帖事件，将帖子保存到Elasticsearch服务器中
+        Event publishEvent = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityId(id);
+        eventProducer.fireEvent(publishEvent);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //帖子删除
+    @RequestMapping(path = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public String setDelete(int id){
+        //更新帖子的状态 '0-正常; 1-精华; 2-拉黑;'
+        discussPostService.updateDiscussPostStatus(id, 2);
+
+        //触发删帖事件，将帖子保存到Elasticsearch服务器中
+        Event deleteEvent = new Event()
+                .setTopic(TOPIC_DELETE)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityId(id);
+        eventProducer.fireEvent(deleteEvent);
+
+        return CommunityUtil.getJSONString(0);
+    }
 }
