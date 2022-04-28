@@ -5,11 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.BoundValueOperations;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisStringCommands;
+import org.springframework.data.redis.core.*;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.nio.charset.StandardCharsets;
 
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
@@ -96,5 +97,67 @@ public class RedisTests {
             }
         });
         System.out.println(obj);
+    }
+
+    @Test
+    public void testHyperLoglog(){
+        String redisKey = "test:hll:01";
+
+        for(int i = 0; i < 10000; i++){
+            redisTemplate.opsForHyperLogLog().add(redisKey, i);
+        }
+
+        for(int i = 0; i < 10000; i++){
+            redisTemplate.opsForHyperLogLog().add(redisKey, i);
+        }
+
+        System.out.println(redisTemplate.opsForHyperLogLog().size(redisKey));
+    }
+
+    @Test
+    public void testBitmap(){
+        String redisKey1 = "test:bm:01";
+        redisTemplate.opsForValue().setBit(redisKey1, 0, true);
+        //redisTemplate.opsForValue().setBit(redisKey1, 1, true);
+        //redisTemplate.opsForValue().setBit(redisKey1, 2, true);
+
+        System.out.println(redisTemplate.opsForValue().getBit(redisKey1,0));
+        System.out.println(redisTemplate.opsForValue().getBit(redisKey1,1));
+        System.out.println(redisTemplate.opsForValue().getBit(redisKey1,2));
+        System.out.println(redisTemplate.opsForValue().getBit(redisKey1,3));
+
+
+        Object obj = redisTemplate.execute(new RedisCallback() {
+            @Override
+            public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                return connection.bitCount(redisKey1.getBytes());
+            }
+        });
+        System.out.println(obj);
+
+
+        String redisKey2 = "test:bm:02";
+        //redisTemplate.opsForValue().setBit(redisKey2, 0, true);
+        redisTemplate.opsForValue().setBit(redisKey2, 1, true);
+        //redisTemplate.opsForValue().setBit(redisKey2, 2, true);
+
+
+        String redisKey3 = "test:bm:03";
+        //redisTemplate.opsForValue().setBit(redisKey2, 0, true);
+        //redisTemplate.opsForValue().setBit(redisKey2, 1, true);
+        redisTemplate.opsForValue().setBit(redisKey3, 2, true);
+
+        Object obj2 = redisTemplate.execute(new RedisCallback() {
+            @Override
+            public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                String redisKey4 = "test:bm:res";
+                connection.bitOp(RedisStringCommands.BitOperation.OR,
+                        redisKey4.getBytes(), redisKey1.getBytes(), redisKey2.getBytes(), redisKey3.getBytes());
+
+                return connection.bitCount(redisKey4.getBytes());
+            }
+        });
+
+        System.out.println(obj2);
     }
 }
