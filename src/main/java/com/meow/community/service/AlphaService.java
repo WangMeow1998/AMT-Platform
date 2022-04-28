@@ -6,8 +6,12 @@ import com.meow.community.dao.UserMapper;
 import com.meow.community.entity.DiscussPost;
 import com.meow.community.entity.User;
 import com.meow.community.util.CommunityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
@@ -47,6 +51,9 @@ public class AlphaService {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private final static Logger logger = LoggerFactory.getLogger(AlphaService.class);
 
     //isolations: 事务的隔离级别
     //propagation: 传播机制
@@ -110,4 +117,17 @@ public class AlphaService {
             }
         });
     }
+
+
+    //被@Async修饰的方法，在多线程环境下会被异步调用
+    @Async
+    public void execute1(){
+        logger.debug("@Async注解修饰的方法，可被多线程执行");
+    }
+
+    ////会被自动扫描到，不用调用这个方法，会被自动调用
+    //@Scheduled(initialDelay = 10000, fixedRate = 1000)
+    //public void execute2(){
+    //    logger.debug("@Scheduled注解修饰的方法，可被多线程执行");
+    //}
 }
