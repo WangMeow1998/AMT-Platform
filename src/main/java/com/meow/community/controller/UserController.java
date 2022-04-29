@@ -75,6 +75,7 @@ public class UserController implements CommunityConstant {
         //确定文件存放的路径
         File dest = new File(uploadPath + "/" + fileName);
         try {
+            //把内存图片写入磁盘中
             headerImage.transferTo(dest);
         } catch (IOException e) {
             logger.error("上传文件失败: " + e.getMessage());
