@@ -1,5 +1,8 @@
 package com.meow.community.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public interface CommunityConstant {
     /**
      * 激活成功
@@ -88,4 +91,5 @@ public interface CommunityConstant {
      * 权限：版主
      */
     String AUTHORITY_MODERATOR = "moderator";
+
 }

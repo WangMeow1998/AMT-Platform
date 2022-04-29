@@ -9,7 +9,9 @@ import com.meow.community.service.CommentService;
 import com.meow.community.service.DiscussPostService;
 import com.meow.community.util.CommunityConstant;
 import com.meow.community.util.HostHolder;
+import com.meow.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,9 @@ public class CommentController implements CommunityConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)
@@ -66,6 +71,10 @@ public class CommentController implements CommunityConstant {
                     .setUserId(comment.getUserId())
                     .setEntityId(discussPostId);
             eventProducer.fireEvent(updateEvent);
+
+            //缓存需要计算分数的贴子 -- 有评论才缓存，回复不缓存
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey, discussPostId);
         }
 
         return "redirect:/discussPost/detail/" + discussPostId;

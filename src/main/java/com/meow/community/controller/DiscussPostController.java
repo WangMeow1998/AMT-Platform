@@ -10,7 +10,9 @@ import com.meow.community.service.UserService;
 import com.meow.community.util.CommunityConstant;
 import com.meow.community.util.CommunityUtil;
 import com.meow.community.util.HostHolder;
+import com.meow.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +44,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private EventProducer eventProducer;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String title, String content){
@@ -62,6 +67,11 @@ public class DiscussPostController implements CommunityConstant {
                 .setUserId(user.getId())
                 .setEntityId(discussPost.getId());
         eventProducer.fireEvent(publishEvent);
+
+        //缓存需要计算分数的贴子
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, discussPost.getId());
+
 
         //报错的情况，等着将来会处理。
         return CommunityUtil.getJSONString(0,"发布成功!");
@@ -205,6 +215,10 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityId(id);
         eventProducer.fireEvent(publishEvent);
 
+        //缓存需要计算分数的贴子
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, id);
+
         return CommunityUtil.getJSONString(0);
     }
 
@@ -221,6 +235,10 @@ public class DiscussPostController implements CommunityConstant {
                 .setUserId(hostHolder.getUser().getId())
                 .setEntityId(id);
         eventProducer.fireEvent(publishEvent);
+
+        //缓存需要计算分数的贴子
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, id);
 
         return CommunityUtil.getJSONString(0);
     }
