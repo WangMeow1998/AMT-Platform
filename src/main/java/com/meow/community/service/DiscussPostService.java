@@ -33,10 +33,10 @@ public class DiscussPostService {
     private SensitiveFilter sensitiveFilter;
 
     @Value("${caffeine.posts.max-size}")
-    private int maxSize;
+    private int maxSize; //缓存的最大数量
 
     @Value("${caffeine.posts.expire-seconds}")
-    private int expireSeconds;
+    private int expireSeconds; //Caffeine缓存存活时间：180s
 
     //Caffeine (一级缓存) 核心接口：Cache，LoadingCache，AsyncLoadingCache
     /**
@@ -76,7 +76,7 @@ public class DiscussPostService {
                         return discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
                     }
                 });
-        //初始化帖子综述缓存
+        //初始化帖子总数缓存
         postRowsCache = Caffeine.newBuilder()
                 .maximumSize(maxSize)
                 .expireAfterWrite(expireSeconds, TimeUnit.SECONDS)
@@ -93,6 +93,7 @@ public class DiscussPostService {
         if(userId == 0 && orderMode == 1){ //从缓存获取热帖数据
             return postListCache.get(offset + ":" + limit);
         }
+        //如果不是获取热帖数据，而是最新贴数据，则从数据库中获取
         logger.debug("load post list from DB.");
         return discussPostMapper.selectDiscussPosts(userId, offset, limit, orderMode);
     }
